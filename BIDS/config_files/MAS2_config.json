@@ -332,6 +332,135 @@
         "IntendedFor": "id_asl_asl",
         "B0FieldIdentifier": "pepolar_asl"
       }
+    },
+    {
+      "id": [],
+      "datatype": "anat",
+      "suffix": "T1w",
+      "criteria": {
+        "SeriesDescription": "ABCD_T1w_MPR_vNav_BW740",
+        "EchoNumber": 1,
+        "EchoTime": 0.00181
+      },
+      "custom_entities": "echo-1",
+      "sidecar_changes": []
+    },
+    {
+      "id": [],
+      "datatype": "anat",
+      "suffix": "T1w",
+      "criteria": {
+        "SeriesDescription": "ABCD_T1w_MPR_vNav_BW740",
+        "EchoNumber": 2,
+        "EchoTime": 0.0036
+      },
+      "custom_entities": "echo-2",
+      "sidecar_changes": []
+    },
+    {
+      "id": [],
+      "datatype": "anat",
+      "suffix": "T1w",
+      "criteria": {
+        "SeriesDescription": "ABCD_T1w_MPR_vNav_BW740",
+        "EchoNumber": 3,
+        "EchoTime": 0.00539
+      },
+      "custom_entities": "echo-3",
+      "sidecar_changes": []
+    },
+    {
+      "id": [],
+      "datatype": "anat",
+      "suffix": "T1w",
+      "criteria": {
+        "SeriesDescription": "ABCD_T1w_MPR_vNav_BW740",
+        "EchoNumber": 4,
+        "EchoTime": 0.00718
+      },
+      "custom_entities": "echo-4",
+      "sidecar_changes": []
+    },
+    {
+      "id": [],
+      "datatype": "fmap",
+      "suffix": "epi",
+      "criteria": {
+        "SeriesDescription": "AP_FMAP_for DIFFUSION",
+        "PhaseEncodingDirection": "j-"
+      },
+      "custom_entities": "acq-pepolarForDwi_dir-AP",
+      "sidecar_changes": {
+        "PhaseEncodingDirection": "j-",
+        "IntendedFor": [
+          "id_dwi_ap1",
+          "id_dwi_ap2",
+          "id_dwi_pa1",
+          "id_dwi_pa2"
+        ]
+      }
+    },
+    {
+      "id": [],
+      "datatype": "fmap",
+      "suffix": "epi",
+      "criteria": {
+        "SeriesDescription": "PA_FMAP_for DIFFUSION",
+        "PhaseEncodingDirection": "j"
+      },
+      "custom_entities": "acq-pepolarForDwi_dir-PA",
+      "sidecar_changes": {
+        "PhaseEncodingDirection": "j",
+        "IntendedFor": [
+          "id_dwi_ap1",
+          "id_dwi_ap2",
+          "id_dwi_pa1",
+          "id_dwi_pa2"
+        ]
+      }
+    },
+    {
+      "id": "id_rsfmri",
+      "datatype": "func",
+      "suffix": "bold",
+      "criteria": {
+        "SeriesDescription": "fMRI _RESTING STATE_MB6_PA normalise OFF"
+      },
+      "custom_entities": "task-rest",
+      "sidecar_changes": {
+        "TaskName": "rest",
+        "B0FieldSource": "pepolar_rsfmri"
+      }
+    },
+    {
+      "id": "id_rsfmri_pepolar_fmap_ap",
+      "datatype": "fmap",
+      "suffix": "epi",
+      "criteria": {
+        "SeriesDescription": "AP_FMAP_for resting state fMRI normalise OFF",
+        "PhaseEncodingDirection": "j-"
+      },
+      "custom_entities": "acq-pepolarForRsfmri_dir-AP",
+      "sidecar_changes": {
+        "PhaseEncodingDirection": "j-",
+        "IntendedFor": "id_rsfmri",
+        "B0FieldIdentifier": "pepolar_rsfmri"
+      }
+    },
+    {
+      "id": "id_rsfmri_pepolar_fmap_pa",
+      "datatype": "fmap",
+      "suffix": "epi",
+      "criteria": {
+        "SeriesDescription": "PA_FMAP_for resting state fMRI normalise OFF",
+        "PhaseEncodingDirection": "j"
+      },
+      "custom_entities": "acq-pepolarForRsfmri_dir-PA",
+      "sidecar_changes": {
+        "PhaseEncodingDirection": "j",
+        "IntendedFor": "id_rsfmri",
+        "B0FieldIdentifier": "pepolar_rsfmri"
+      }
     }
   ]
 }

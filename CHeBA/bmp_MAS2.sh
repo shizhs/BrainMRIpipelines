@@ -77,17 +77,16 @@ fmriprep_version=23.1.4
 # Create dcm2bids configuration file.
 # ++++++++++++++++++++++++++++++++++++++++++++
 # 0.1 - reorganise DICOM folders, and run helper function.
-bmp_BIDS_CHeBA.sh --study VCI --dicom_zip $DICOM_zip --bids_dir $BIDS_dir --subj_id $subject_ID --is_1st_run
+#bmp_BIDS_CHeBA.sh --study MAS2 --dicom_zip $DICOM_zip --bids_dir $BIDS_dir --subj_id $subject_ID --is_1st_run
 # 0.2 - generate configuration file.
 # MATLAB ==>> vci_config = bmp_BIDS_CHeBA_genVCIconfigFile('rsfMRI'); % edit matchings
 # 0.3 - tidy up.
-# edit BrainMRIPipelines/BIDS/config_files/VCI_config.json to remove [] lines.
+# edit BrainMRIPipelines/BIDS/config_files/MAS2_config.json to remove [] lines.
 
-exit
 # dcm2bids for subsequent scans.
 # +++++++++++++++++++++++++++++++++++++++
-conda activate dcm2bids
-bmp_BIDS_CHeBA.sh --study VCI --dicom_zip $DICOM_zip --bids_dir $BIDS_dir --subj_id $subject_ID
+#conda activate dcm2bids
+#bmp_BIDS_CHeBA.sh --study MAS2 --dicom_zip $DICOM_zip --bids_dir $BIDS_dir --subj_id $subject_ID
 
 # validate BIDS
 # +++++++++++++++++++++++++++++++++++++++
@@ -139,7 +138,7 @@ singularity run --cleanenv \
                 $BMP_3RD_PATH/smriprep-${smriprep_version}.simg \
                 ${BIDS_dir} ${BIDS_dir}/derivatives/smriprep_${smriprep_version} \
                 participant \
-                --participant_label vci003 \
+                --participant_label ${subject_ID} \
                 --omp-nthreads $omp \
                 --fs-license-file /opt/freesurfer/license.txt \
                 --work-dir ${BIDS_dir}/derivatives/smriprep_${smriprep_version}/work \

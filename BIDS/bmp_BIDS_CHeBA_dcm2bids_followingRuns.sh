@@ -10,7 +10,7 @@
 DICOM_zip=$1
 BIDS_dir=$2
 subject_ID=$3
-study=$4 # e.g., 'VCI' or 'CADSYD'
+study=$4 # e.g., 'VCI' or 'CADSYD' or 'MAS2'
 
 case "$study" in
 
@@ -27,6 +27,12 @@ case "$study" in
 				echo "[$(date)] : $(basename $0) : Calling bmp_BIDS_CHeBA_reorganiseFlywheelDicomZip_CADSYD.sh to sort out Flywheel zip archive."
 				bmp_BIDS_CHeBA_reorganiseFlywheelDicomZip_CADSYD.sh $DICOM_zip $BIDS_dir $subject_ID
 				;;
+			"MAS2")
+				echo "[$(date)] : $(basename $0) : MAS2 study subject."
+                                echo "[$(date)] : $(basename $0) : Calling bmp_BIDS_CHeBA_reorganiseFlywheelDicomZip_MAS2.sh to sort out Flywheel zip archive."
+                                bmp_BIDS_CHeBA_reorganiseFlywheelDicomZip_MAS2.sh $DICOM_zip $BIDS_dir $subject_ID
+                                ;;
+
 
 			*)
 
