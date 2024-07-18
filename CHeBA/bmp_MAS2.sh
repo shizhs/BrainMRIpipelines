@@ -55,14 +55,14 @@
 
 
 # Katana
-export DICOM_zip=/srv/scratch/cheba/NiL/shizuka/RA/MAS2/vci_protocol/RAW/flywheel_20240716_234111.zip
-export BIDS_dir=/srv/scratch/cheba/NiL/shizuka/RA/MAS2/vci_protocol/BIDS
-export subject_ID=mas001
+#export DICOM_zip=/srv/scratch/cheba/NiL/shizuka/RA/MAS2/vci_protocol/RAW/10458.tar
+#export BIDS_dir=/srv/scratch/cheba/NiL/shizuka/RA/MAS2/vci_protocol/BIDS
+#export subject_ID=test001
 module load matlab/R2023b
 
-# DICOM_zip=$1
-# BIDS_dir=$2
-# subject_ID=$3
+export DICOM_zip=$1
+export BIDS_dir=$2
+export subject_ID=$3
 
 omp=16 # max num of threads per process
 
@@ -86,8 +86,7 @@ fmriprep_version=23.1.4
 # dcm2bids for subsequent scans.
 # +++++++++++++++++++++++++++++++++++++++
 #conda activate dcm2bids
-#bmp_BIDS_CHeBA.sh --study MAS2 --dicom_zip $DICOM_zip --bids_dir $BIDS_dir --subj_id $subject_ID
-
+bmp_BIDS_CHeBA.sh --study MAS2 --dicom_zip $DICOM_zip --bids_dir $BIDS_dir --subj_id $subject_ID
 # validate BIDS
 # +++++++++++++++++++++++++++++++++++++++
 # bmp_BIDSvalidator.sh --bids_directory $BIDS_dir --docker
@@ -132,16 +131,18 @@ singularity run --cleanenv \
 #
 mkdir -p ${BIDS_dir}/derivatives/smriprep_${smriprep_version}/work
 
+export FS_LICENSE=$FREESURFER_HOME/license.txt
 singularity run --cleanenv \
-				-B $BIDS_dir \
-				-B $FREESURFER_HOME/license.txt:/opt/freesurfer/license.txt \
+		-B $BIDS_dir \
+		-B $FREESURFER_HOME/license.txt:/opt/freesurfer/license.txt \
+		-B ${BIDS_dir}/derivatives/smriprep_${smriprep_version}/work:/work \
                 $BMP_3RD_PATH/smriprep-${smriprep_version}.simg \
                 ${BIDS_dir} ${BIDS_dir}/derivatives/smriprep_${smriprep_version} \
                 participant \
                 --participant_label ${subject_ID} \
                 --omp-nthreads $omp \
                 --fs-license-file /opt/freesurfer/license.txt \
-                --work-dir ${BIDS_dir}/derivatives/smriprep_${smriprep_version}/work \
+                --work-dir /work \
                 --notrack \
                 -v
 

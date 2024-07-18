@@ -15,6 +15,34 @@ deal_with_3D(){
 	zip_path_kword=$4
 	modality_name=$5
 
+	if [[ ${DICOM_zip: -4} == ".tar" ]]; then
+
+		DICOM="$(tar -tf $DICOM_zip | grep "$zip_path_kword" | grep -E "\.dcm$")"
+		echo $DICOM
+
+		if [[ -z "$DICOM" ]]; then
+    			echo "DICOM is an empty string"
+		else
+			curr_rand_str=$(head -c 5 /dev/random | openssl base64 | sed 's/\///g')
+			TEMP_DIR=$BMP_TMP_PATH/$curr_rand_str
+
+
+			mkdir -p $TEMP_DIR
+
+			mkdir -p $BIDS_dir/sourcedata/$subject_ID/$modality_name
+
+			echo -en "[$(date)] : $(basename $0) : Reorganising $modality_name (3D volume) DICOM folder ... "
+
+			echo "for dcm_file in $(echo $DICOM | sed 's/ /\\ /g'); do echo "Extracting \$dcm_file to \$TEMP_DIR"; tar --extract --file="$DICOM_zip" --directory="$TEMP_DIR" --strip-components=\$((\$(echo "\$dcm_file" | tr -cd '/' | wc -c))) \"\$dcm_file\"; done" > $BMP_TMP_PATH/bmp_${curr_rand_str}.sh
+
+			bash $BMP_TMP_PATH/bmp_${curr_rand_str}.sh && rm -f $BMP_TMP_PATH/bmp_${curr_rand_str}.sh
+			mv $BMP_TMP_PATH/${curr_rand_str}/*.dcm "$BIDS_dir/sourcedata/$subject_ID/$modality_name/${modality_name}.dcm"
+			rm -r $TEMP_DIR
+			echo "DONE!"
+		fi
+		return
+	fi
+
 	DICOM="flywheel$(unzip -l $DICOM_zip | grep "$zip_path_kword" | grep ".dcm" | awk -F'flywheel' '{print $NF}')"
 
 	if [ "$DICOM" = "flywheel" ]; then
@@ -49,6 +77,35 @@ deal_with_4D(){
 	zip_path_kword=$4
 	modality_name=$5
 
+
+        if [[ ${DICOM_zip: -4} == ".tar" ]]; then
+
+                DICOM="$(tar -tf $DICOM_zip | grep "$zip_path_kword" | grep ".dicom.zip")"
+                echo $DICOM
+
+		if [[ -z "$DICOM" ]]; then
+                        echo "DICOM is an empty string"
+                else
+                        curr_rand_str=$(head -c 5 /dev/random | openssl base64 | sed 's/\///g')
+                        TEMP_DIR=$BMP_TMP_PATH/$curr_rand_str
+
+
+                        mkdir -p $TEMP_DIR
+
+                        mkdir -p $BIDS_dir/sourcedata/$subject_ID/$modality_name
+
+                        echo -en "[$(date)] : $(basename $0) : Reorganising $modality_name (4D volume) DICOM folder ... "
+
+                        echo "for dcm_file in $(echo $DICOM | sed 's/ /\\ /g'); do echo "Extracting \$dcm_file to $TEMP_DIR"; tar --extract --file="$DICOM_zip" --directory="$TEMP_DIR" --strip-components=\$((\$(echo "\$dcm_file" | tr -cd '/' | wc -c))) \"\$dcm_file\"; unzip $TEMP_DIR/*.zip -d $TEMP_DIR; done" > $BMP_TMP_PATH/bmp_${curr_rand_str}.sh
+
+                        bash $BMP_TMP_PATH/bmp_${curr_rand_str}.sh && rm -f $BMP_TMP_PATH/bmp_${curr_rand_str}.sh
+                        mv $BMP_TMP_PATH/${curr_rand_str}/*.dcm* "$BIDS_dir/sourcedata/$subject_ID/$modality_name/"
+                        rm -r $TEMP_DIR
+                        echo "DONE!"
+                fi
+
+                return
+        fi
 	DICOM="flywheel$(unzip -l $DICOM_zip | grep "$zip_path_kword" | grep ".dicom.zip" | awk -F'flywheel' '{print $NF}')"
 
 	if [ "$DICOM" = "flywheel" ]; then
