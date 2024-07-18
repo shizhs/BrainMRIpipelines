@@ -53,11 +53,32 @@
 #                  Therefore, add --use-syn-sdc and --force-syn
 #                  to enable fieldmap-less distortion correction.
 
+# XPS13 VM lin4neuro
+export DICOM_zip=/home/brain/Desktop/VCI/vci_003/flywheel_20231113_001000.zip
+export BIDS_dir=/home/brain/Desktop/VCI/BIDS
+export subject_ID=vci003
+
+# Macbook pro
+export DICOM_zip=/Users/z3402744/Work/vci/raw/vci_001/flywheel_20230921_005034.zip
+export DICOM_zip=/Users/z3402744/Work/vci/raw/vci_006/flywheel_20231206_110542.zip
+export DICOM_zip=/Users/z3402744/Work/vci/raw/vci_007/flywheel_20240126_020812.zip
+export DICOM_zip=/Users/z3402744/Work/vci/raw/vci_014/flywheel_20240223_031604.zip
+export DICOM_zip=/Users/z3402744/Work/vci/raw/vci_010/flywheel_20240223_235303.zip
+export DICOM_zip=/Users/z3402744/Work/vci/raw/vci_012/flywheel_20240224_001454.zip
+export BIDS_dir=/Users/z3402744/Work/vci/BIDS
+export subject_ID=vci012
+
+# TowerX
+export DICOM_zip=/d/vci/flywheel/vci001/flywheel_20231127_015517.zip
+export DICOM_zip=/d/vci/flywheel/vci006/flywheel_20231206_034538.zip
+export DICOM_zip=/d/vci/vci_014/flywheel_20240325_053620.zip
+export BIDS_dir=/d/vci/BIDS
+export subject_ID=vci014
 
 # Katana
-export DICOM_zip=/srv/scratch/cheba/NiL/shizuka/RA/MAS2/vci_protocol/RAW/flywheel_20240716_234111.zip
-export BIDS_dir=/srv/scratch/cheba/NiL/shizuka/RA/MAS2/vci_protocol/BIDS
-export subject_ID=mas001
+export DICOM_zip=/srv/scratch/cheba/Imaging/vci/vci_015/flywheel_20240313_002036.zip
+export BIDS_dir=/srv/scratch/cheba/Imaging/vci/BIDS
+export subject_ID=vci015
 module load matlab/R2023b
 
 # DICOM_zip=$1
@@ -77,13 +98,12 @@ fmriprep_version=23.1.4
 # Create dcm2bids configuration file.
 # ++++++++++++++++++++++++++++++++++++++++++++
 # 0.1 - reorganise DICOM folders, and run helper function.
-bmp_BIDS_CHeBA.sh --study VCI --dicom_zip $DICOM_zip --bids_dir $BIDS_dir --subj_id $subject_ID --is_1st_run
+# bmp_BIDS_CHeBA.sh --study VCI --dicom_zip $DICOM_zip --bids_dir $BIDS_dir --subj_id $subject_ID --is_1st_run
 # 0.2 - generate configuration file.
 # MATLAB ==>> vci_config = bmp_BIDS_CHeBA_genVCIconfigFile('rsfMRI'); % edit matchings
 # 0.3 - tidy up.
 # edit BrainMRIPipelines/BIDS/config_files/VCI_config.json to remove [] lines.
 
-exit
 # dcm2bids for subsequent scans.
 # +++++++++++++++++++++++++++++++++++++++
 conda activate dcm2bids

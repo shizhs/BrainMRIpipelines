@@ -5,6 +5,19 @@
       "datatype": "anat",
       "suffix": "T1w",
       "criteria": {
+        "SeriesDescription": "ABCD_T1w_MPR_vNav_BW740 RMS",
+        "ProtocolName": "ABCD_T1w_MPR_vNav_BW740"
+      },
+      "custom_entities": "rec-RMS",
+      "sidecar_changes": {
+        "InstitutionName": "RINSW"
+      }
+    },
+    {
+      "id": "id_memprage_rms_vci001",
+      "datatype": "anat",
+      "suffix": "T1w",
+      "criteria": {
         "SeriesDescription": "T1_MEMPRAGE Iso0.9mm_64ch RMS",
         "ProtocolName": "T1_MEMPRAGE Iso0.9mm_64ch"
       },
@@ -18,7 +31,7 @@
       "datatype": "anat",
       "suffix": "FLAIR",
       "criteria": {
-        "SeriesDescription": "t2_space_dark-fluid_sag_p2_ns-t2prep new"
+        "SeriesDescription": "t2_space_DF_BW651"
       },
       "custom_entities": "acq-spaceDarkFluid",
       "sidecar_changes": {
@@ -27,6 +40,18 @@
     },
     {
       "id": "id_t2w",
+      "datatype": "anat",
+      "suffix": "T2w",
+      "criteria": {
+        "SeriesDescription": "ABCD_T2w_SPC_ vNav Iso0.8mm BW744"
+      },
+      "custom_entities": "acq-space",
+      "sidecar_changes": {
+        "InstitutionName": "RINSW"
+      }
+    },
+    {
+      "id": "id_t2w_vci001",
       "datatype": "anat",
       "suffix": "T2w",
       "criteria": {
@@ -181,8 +206,7 @@
         "PCASLType": "unbalanced",
         "LabelingPulseFlipAngle": 27.6,
         "RepetitionTimePreparation": 4.14,
-        "B0FieldSource": "pepolar_asl",
-        "VascularCrushing": false
+        "B0FieldSource": "pepolar_asl"
       }
     },
     {
@@ -281,8 +305,7 @@
         "PCASLType": "unbalanced",
         "LabelingPulseFlipAngle": 27.6,
         "RepetitionTimePreparation": 4.14,
-        "B0FieldSource": "pepolar_asl",
-        "VascularCrushing": false
+        "B0FieldSource": "pepolar_asl"
       }
     },
     {
@@ -331,6 +354,74 @@
         "PhaseEncodingDirection": "j-",
         "IntendedFor": "id_asl_asl",
         "B0FieldIdentifier": "pepolar_asl"
+      }
+    },
+    {
+      "id": "id_cvr_rest",
+      "datatype": "func",
+      "suffix": "bold",
+      "criteria": {
+        "SeriesDescription": "Resting state_ep2d_bold 3.8mm TR1500 adaptive"
+      },
+      "custom_entities": "task-rest_dir-PA",
+      "sidecar_changes": {
+        "TaskName": "rest",
+        "B0FieldSource": "pepolar_cvr_rest"
+      }
+    },
+    {
+      "id": "id_cvr_co2",
+      "datatype": "func",
+      "suffix": "bold",
+      "criteria": {
+        "SeriesDescription": "CVR_ep2d_bold 3.8mm TR1500 adaptive"
+      },
+      "custom_entities": "task-co2_dir-PA",
+      "sidecar_changes": {
+        "TaskName": "co2",
+        "B0FieldSource": "pepolar_cvr_co2"
+      }
+    },
+    {
+      "id": "id_cvr_pepolar_fmap_ap",
+      "datatype": "fmap",
+      "suffix": "epi",
+      "criteria": {
+        "SeriesDescription": "AP_FMAP cvr",
+        "PhaseEncodingDirection": "j-"
+      },
+      "custom_entities": "acq-APforCVR_dir-AP",
+      "sidecar_changes": {
+        "PhaseEncodingDirection": "j-",
+        "IntendedFor": [
+          "id_cvr_rest",
+          "id_cvr_co2"
+        ],
+        "B0FieldIdentifier": [
+          "pepolar_cvr_rest",
+          "pepolar_cvr_co2"
+        ]
+      }
+    },
+    {
+      "id": "id_cvr_pepolar_fmap_pa",
+      "datatype": "fmap",
+      "suffix": "epi",
+      "criteria": {
+        "SeriesDescription": "PA_FMAP cvr",
+        "PhaseEncodingDirection": "j"
+      },
+      "custom_entities": "acq-PAforCVR_dir-PA",
+      "sidecar_changes": {
+        "PhaseEncodingDirection": "j",
+        "IntendedFor": [
+          "id_cvr_rest",
+          "id_cvr_co2"
+        ],
+        "B0FieldIdentifier": [
+          "pepolar_cvr_rest",
+          "pepolar_cvr_co2"
+        ]
       }
     }
   ]
