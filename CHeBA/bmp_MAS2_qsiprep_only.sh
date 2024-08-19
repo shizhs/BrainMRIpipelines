@@ -55,9 +55,6 @@
 
 
 # Katana
-#export DICOM_zip=/srv/scratch/cheba/NiL/shizuka/RA/MAS2/vci_protocol/RAW/10458.tar
-#export BIDS_dir=/srv/scratch/cheba/NiL/shizuka/RA/MAS2/vci_protocol/BIDS
-#export subject_ID=test001
 module load matlab/R2023b
 
 export DICOM_zip=$1
@@ -74,89 +71,13 @@ aslprep_version=0.6.0
 fmriprep_version=23.1.4
 
 
-# Create dcm2bids configuration file.
-# ++++++++++++++++++++++++++++++++++++++++++++
-# 0.1 - reorganise DICOM folders, and run helper function.
-#bmp_BIDS_CHeBA.sh --study MAS2 --dicom_zip $DICOM_zip --bids_dir $BIDS_dir --subj_id $subject_ID --is_1st_run
-# 0.2 - generate configuration file.
-# MATLAB ==>> vci_config = bmp_BIDS_CHeBA_genVCIconfigFile('rsfMRI'); % edit matchings
-# 0.3 - tidy up.
-# edit BrainMRIPipelines/BIDS/config_files/MAS2_config.json to remove [] lines.
-
-# dcm2bids for subsequent scans.
-# +++++++++++++++++++++++++++++++++++++++
-#conda activate dcm2bids
-
-## TODO commenting out just for testing
-bmp_BIDS_CHeBA.sh --study MAS2 --dicom_zip $DICOM_zip --bids_dir $BIDS_dir --subj_id $subject_ID
-
-# validate BIDS
-# +++++++++++++++++++++++++++++++++++++++
-# bmp_BIDSvalidator.sh --bids_directory $BIDS_dir --docker
-#
-# Or directly run in docker
-#
-# docker run -ti --rm -v ${BIDS_dir}:/data:ro bids/validator /data
-#
-# OR
-singularity run --cleanenv \
-                --bind ${BIDS_dir}:/data:ro \
-                $BMP_3RD_PATH/bids-validator-${bids_validator_version}.sif \
-                /data
-
-# MRIQC (subject level)
-# +++++++++++++++++++++++++++++++++++++++
-# docker run -it --rm -v ${BIDS_dir}:/data:ro -v ${BIDS_dir}/derivatives/mriqc/sub-$subject_ID:/out nipreps/mriqc /data /out participant --modalities {T1w,T2w,bold,dwi} --verbose-reports --species human --deoblique --despike --mem_gb 4  --nprocs 1 --no-sub
-#
-# OR
-#
-mkdir -p ${BIDS_dir}/derivatives/mriqc_${mriqc_version}/work
-
-singularity run --cleanenv \
-                -B ${BIDS_dir}:/data \
-                -B ${BIDS_dir}/derivatives/mriqc_${mriqc_version}:/out \
-                -B ${BIDS_dir}/derivatives/mriqc_${mriqc_version}/work:/work \
-                $BMP_3RD_PATH/mriqc-${mriqc_version}.sif \
-                /data /out \
-                participant \
-                --work-dir /work \
-                --participant_label ${subject_ID} \
-                -m {T1w,T2w,bold} \
-                --verbose-reports \
-                --species human \
-                --deoblique \
-                --despike \
-                --no-sub \
-                -v
-
-# Pre-processing sMRI (smriprep)
-# +++++++++++++++++++++++++++++++++++++++
-#
-mkdir -p ${BIDS_dir}/derivatives/smriprep_${smriprep_version}/work
-
-export FS_LICENSE=$FREESURFER_HOME/license.txt
-singularity run --cleanenv \
-		-B $BIDS_dir \
-		-B $FREESURFER_HOME/license.txt:/opt/freesurfer/license.txt \
-		-B ${BIDS_dir}/derivatives/smriprep_${smriprep_version}/work:/work \
-                $BMP_3RD_PATH/smriprep-${smriprep_version}.simg \
-                ${BIDS_dir} ${BIDS_dir}/derivatives/smriprep_${smriprep_version} \
-                participant \
-                --participant_label ${subject_ID} \
-                --omp-nthreads $omp \
-                --fs-license-file /opt/freesurfer/license.txt \
-                --work-dir /work \
-                --notrack \
-                -v
-
-# Pre-processing DWI  (qsiprep)
 # +++++++++++++++++++++++++++++++++++++++++++++++++
 #
 # References : https://qsiprep.readthedocs.io/en/latest/preprocessing.html#merge-denoise
 
 # Edit the Affine header to match header across all DWI scans
 #${BIDS_dir}/$subject_ID/dwi/${subject_ID}_dir-AP_run-1_dwi.nii.gz
-python3 align_affine_header.py ${BIDS_dir} ${subject_ID}
+python3 $BMP_PATH/CHeBA/align_affine_header.py ${BIDS_dir} ${subject_ID}
 
 work_dir=${BIDS_dir}/derivatives/qsiprep_${qsiprep_version}/work/$subject_ID
 
@@ -167,6 +88,7 @@ singularity run --containall --writable-tmpfs \
                 -B ${BIDS_dir}/derivatives/qsiprep_${qsiprep_version} \
                 -B ${FREESURFER_HOME}/license.txt:/opt/freesurfer/license.txt \
                 -B $BMP_PATH/CHeBA/bmp_MAS2_qsiprep_eddy_param.json:/opt/eddy_param.json \
+		-B $BMP_PATH \
                 -B $work_dir \
                 $BMP_3RD_PATH/qsiprep-${qsiprep_version}.sif \
                 ${BIDS_dir} \
@@ -211,6 +133,7 @@ for spec in mrtrix_multishell_msmt_ACT-hsvs \
                     -B $freesurfer_dir \
                     -B $work_dir \
                     -B ${FREESURFER_HOME}/license.txt:/opt/freesurfer/license.txt \
+		    -B $BMP_PATH \
                     $BMP_3RD_PATH/qsiprep-${qsiprep_version}.sif \
                     $qsiprep_dir $output_dir \
                     participant \
@@ -226,75 +149,3 @@ for spec in mrtrix_multishell_msmt_ACT-hsvs \
                     -v
 end
 
-
-# Processing ASL (ASLPrep)
-# +++++++++++++++++++++++++++++++++++++++++++++++++++++++
-#
-output_dir=$BIDS_dir/derivatives/aslprep_${aslprep_version}
-work_dir=$BMP_TMP_PATH/aslprep_work/$subject_ID		# aslprep does not allow work dir to be a subdir of bids dir.
-
-mkdir -p $work_dir $output_dir
-
-singularity run --cleanenv \
-				-B $HOME:/home/aslprep \
-				--home /home/aslprep \
-				-B $BIDS_dir \
-				-B $output_dir \
-				-B $work_dir \
-				-B ${FREESURFER_HOME}/license.txt:/opt/freesurfer/license.txt \
-				$BMP_3RD_PATH/aslprep-${aslprep_version}.simg \
-				$BIDS_dir $output_dir \
-				participant \
-				--skip_bids_validation \
-				--participant_label $subject_ID \
-				--omp-nthreads $omp \
-				--output-spaces MNI152NLin6Asym:res-2 T1w asl \
-				--force-bbr \
-				--m0_scale 10 \
-				--scorescrub \
-				--basil \
-				--use-syn-sdc \
-				--force-syn \
-				--fs-license-file /opt/freesurfer/license.txt \
-				--work-dir $work_dir \
-				-v
-
-
-# Preprocessing rsfMRI (fMRIPrep)
-# ++++++++++++++++++++++++++++++++++++++++++++++++++++++
-output_dir=$BIDS_dir/derivatives/fmriprep_${fmriprep_version}
-work_dir=$BMP_TMP_PATH/fmriprep_work/$subject_ID
-freesurfer_dir=$BIDS_dir/derivatives/smriprep_${smriprep_version}/freesurfer
-
-mkdir -p $work_dir $output_dir
-
-singularity run --cleanenv \
-				-B $BIDS_dir \
-				-B $output_dir \
-				-B $work_dir \
-				-B $freesurfer_dir \
-				-B ${FREESURFER_HOME}/license.txt:/opt/freesurfer/license.txt \
-				-B $BMP_TMP_PATH/templateflow:/home/fmriprep/.cache/templateflow \
-				-B $BMP_TMP_PATH/matplotlib:/home/fmriprep/.config/matplotlib \
-				$BMP_3RD_PATH/fmriprep-${fmriprep_version}.simg \
-				$BIDS_dir $output_dir \
-				participant \
-				--skip_bids_validation \
-				--participant_label $subject_ID \
-				--omp-nthreads $omp \
-				--output-spaces MNI152NLin6Asym:res-2 MNI152NLin2009cAsym:res-2 fsaverage:den-10k anat func \
-				--force-bbr \
-				--me-t2s-fit-method curvefit \
-				--project-goodvoxels \
-				--medial-surface-nan \
-				--cifti-output 91k \
-				--return-all-components \
-				--fs-license-file /opt/freesurfer/license.txt \
-				--fs-subjects-dir $freesurfer_dir \
-				--work-dir $work_dir \
-				-v
-
-
-
-# Postprocessing rsfMRI (XCP-D)
-# ++++++++++++++++++++++++++++++++++++++++++++++++++++++

@@ -81,7 +81,9 @@ function vci_dcm2bids_config = bmp_BIDS_CHeBA_genVCIconfigFile (varargin)
 	vci_dcm2bids_config.descriptions(curr_idx).datatype = "dwi";
 	vci_dcm2bids_config.descriptions(curr_idx).suffix = "dwi";
 	vci_dcm2bids_config.descriptions(curr_idx).criteria.SeriesDescription = "AP_BLOCK_1_DIFFUSION_30DIR";
+	vci_dcm2bids_config.descriptions(curr_idx).criteria.PhaseEncodingDirection = "j-";
 	vci_dcm2bids_config.descriptions(curr_idx).sidecar_changes.MultipartID = "dwi_1";
+	vci_dcm2bids_config.descriptions(curr_idx).sidecar_changes.PhaseEncodingDirection = "j-";
 	vci_dcm2bids_config.descriptions(curr_idx).custom_entities = "dir-AP_run-1";
 
 	% DWI - AP 2
@@ -91,7 +93,9 @@ function vci_dcm2bids_config = bmp_BIDS_CHeBA_genVCIconfigFile (varargin)
 	vci_dcm2bids_config.descriptions(curr_idx).datatype = "dwi";
 	vci_dcm2bids_config.descriptions(curr_idx).suffix = "dwi";
 	vci_dcm2bids_config.descriptions(curr_idx).criteria.SeriesDescription = "AP_BLOCK_2_DIFFUSION_30DIR";
+	vci_dcm2bids_config.descriptions(curr_idx).criteria.PhaseEncodingDirection = "j-";
 	vci_dcm2bids_config.descriptions(curr_idx).sidecar_changes.MultipartID = "dwi_1";
+	vci_dcm2bids_config.descriptions(curr_idx).sidecar_changes.PhaseEncodingDirection = "j-";
 	vci_dcm2bids_config.descriptions(curr_idx).custom_entities = "dir-AP_run-2";
 
 	% DWI - PA 1
@@ -101,7 +105,9 @@ function vci_dcm2bids_config = bmp_BIDS_CHeBA_genVCIconfigFile (varargin)
 	vci_dcm2bids_config.descriptions(curr_idx).datatype = "dwi";
 	vci_dcm2bids_config.descriptions(curr_idx).suffix = "dwi";
 	vci_dcm2bids_config.descriptions(curr_idx).criteria.SeriesDescription = "PA_BLOCK_1_DIFFUSION_30DIR";
+	vci_dcm2bids_config.descriptions(curr_idx).criteria.PhaseEncodingDirection = "j-";
 	vci_dcm2bids_config.descriptions(curr_idx).sidecar_changes.MultipartID = "dwi_1";
+	vci_dcm2bids_config.descriptions(curr_idx).sidecar_changes.PhaseEncodingDirection = "j-";
 	vci_dcm2bids_config.descriptions(curr_idx).custom_entities = "dir-PA_run-1";
 
 	% DWI - PA 2
@@ -111,7 +117,9 @@ function vci_dcm2bids_config = bmp_BIDS_CHeBA_genVCIconfigFile (varargin)
 	vci_dcm2bids_config.descriptions(curr_idx).datatype = "dwi";
 	vci_dcm2bids_config.descriptions(curr_idx).suffix = "dwi";
 	vci_dcm2bids_config.descriptions(curr_idx).criteria.SeriesDescription = "PA_BLOCK_2_DIFFUSION_30DIR";
+	vci_dcm2bids_config.descriptions(curr_idx).criteria.PhaseEncodingDirection = "j-";
 	vci_dcm2bids_config.descriptions(curr_idx).sidecar_changes.MultipartID = "dwi_1";
+	vci_dcm2bids_config.descriptions(curr_idx).sidecar_changes.PhaseEncodingDirection = "j-";
 	vci_dcm2bids_config.descriptions(curr_idx).custom_entities = "dir-PA_run-2";
 
 	% ASL

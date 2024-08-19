@@ -55,9 +55,6 @@
 
 
 # Katana
-#export DICOM_zip=/srv/scratch/cheba/NiL/shizuka/RA/MAS2/vci_protocol/RAW/10458.tar
-#export BIDS_dir=/srv/scratch/cheba/NiL/shizuka/RA/MAS2/vci_protocol/BIDS
-#export subject_ID=test001
 module load matlab/R2023b
 
 export DICOM_zip=$1
@@ -149,83 +146,6 @@ singularity run --cleanenv \
                 --notrack \
                 -v
 
-# Pre-processing DWI  (qsiprep)
-# +++++++++++++++++++++++++++++++++++++++++++++++++
-#
-# References : https://qsiprep.readthedocs.io/en/latest/preprocessing.html#merge-denoise
-
-# Edit the Affine header to match header across all DWI scans
-#${BIDS_dir}/$subject_ID/dwi/${subject_ID}_dir-AP_run-1_dwi.nii.gz
-python3 align_affine_header.py ${BIDS_dir} ${subject_ID}
-
-work_dir=${BIDS_dir}/derivatives/qsiprep_${qsiprep_version}/work/$subject_ID
-
-mkdir -p $work_dir
-
-singularity run --containall --writable-tmpfs \
-                -B ${BIDS_dir} \
-                -B ${BIDS_dir}/derivatives/qsiprep_${qsiprep_version} \
-                -B ${FREESURFER_HOME}/license.txt:/opt/freesurfer/license.txt \
-                -B $BMP_PATH/CHeBA/bmp_MAS2_qsiprep_eddy_param.json:/opt/eddy_param.json \
-                -B $work_dir \
-                $BMP_3RD_PATH/qsiprep-${qsiprep_version}.sif \
-                ${BIDS_dir} \
-                ${BIDS_dir}/derivatives/qsiprep_${qsiprep_version} \
-                participant \
-                --skip_bids_validation \
-                --participant_label ${subject_ID} \
-                --fs-license-file /opt/freesurfer/license.txt \
-                --unringing-method mrdegibbs \
-                --denoise-after-combining \
-                --output-resolution 1.2 \
-                --anat_modality T1w \
-                --hmc_model eddy \
-                --eddy_config /opt/eddy_param.json \
-                --pepolar_method TOPUP \
-                --work_dir $work_dir \
-                --omp_nthreads $omp \
-                -v
-
-
-# Reconstruction DWI measures (qsiprep)
-# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-#
-
-qsiprep_dir=$BIDS_dir/derivatives/qsiprep_${qsiprep_version}/qsiprep
-# output_dir=$BIDS_dir/derivatives/qsiprep_${qsiprep_version}/qsirecon/$spec
-freesurfer_dir=$BIDS_dir/derivatives/smriprep_${smriprep_version}/freesurfer
-
-for spec in mrtrix_multishell_msmt_ACT-hsvs \
-            amico_noddi \
-            dsi_studio_gqi
-
-    output_dir=$BIDS_dir/derivatives/qsiprep_${qsiprep_version}/qsirecon_$spec
-    work_dir=$output_dir/work/$subject_ID
-
-    mkdir -p $work_dir
-
-    singularity run --containall --writable-tmpfs \
-                    -B $BMP_TMP_PATH/templateflow:/home/qsiprep/.cache/templateflow \
-                    -B $qsiprep_dir \
-                    -B $output_dir \
-                    -B $freesurfer_dir \
-                    -B $work_dir \
-                    -B ${FREESURFER_HOME}/license.txt:/opt/freesurfer/license.txt \
-                    $BMP_3RD_PATH/qsiprep-${qsiprep_version}.sif \
-                    $qsiprep_dir $output_dir \
-                    participant \
-                    --skip_bids_validation \
-                    --recon_only \
-                    --participant_label ${subject_ID} \
-                    --recon_input $qsiprep_dir \
-                    --recon_spec $spec \
-                    --freesurfer_input $freesurfer_dir \
-                    --fs-license-file /opt/freesurfer/license.txt \
-                    --work_dir $work_dir \
-                    --omp_nthreads $omp \
-                    -v
-end
-
 
 # Processing ASL (ASLPrep)
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -295,6 +215,3 @@ singularity run --cleanenv \
 				-v
 
 
-
-# Postprocessing rsfMRI (XCP-D)
-# ++++++++++++++++++++++++++++++++++++++++++++++++++++++
