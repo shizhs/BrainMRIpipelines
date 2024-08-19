@@ -1,4 +1,4 @@
-function vci_dcm2bids_config = bmp_BIDS_CHeBA_genVCIconfigFile (varargin)
+function vci_dcm2bids_config = bmp_BIDS_CHeBA_genMAS2configFile (varargin)
 %
 % DESCRIPTION :
 %
