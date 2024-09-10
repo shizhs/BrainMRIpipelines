@@ -1,4 +1,3 @@
-#!/bin/bash
 
 
 # HISTORY
@@ -43,7 +42,14 @@ case "$study" in
 
 cd $BIDS_dir
 echo "[$(date)] : $(basename $0) : Calling dcm2bids to convert $subject_ID to BIDS."
-dcm2bids -d sourcedata/$subject_ID -p $subject_ID -c $BMP_PATH/BIDS/config_files/${study}_config.json --clobber --force_dcm2bids
+
+if [ "$subject_ID" == "mas002" ] && [ "$study" == "MAS2" ]; then
+  json="$BMP_PATH/BIDS/config_files/MAS2_special_config.json"
+else
+  json="$BMP_PATH/BIDS/config_files/${study}_config.json"
+fi
+
+dcm2bids -d sourcedata/$subject_ID -p $subject_ID -c $json --clobber --force_dcm2bids
 
 # echo "[$(date)] : $(basename $0) : "
 # echo "[$(date)] : $(basename $0) : [NOTE] If there's any warning message regarding IntendedFor id not found, "

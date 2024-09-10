@@ -143,6 +143,11 @@ subject_ID=$3
 # ++++++++++++++++++++++++++++++++++++++++++++++++++++++
 #
 case "$subject_ID" in
+	mas002)
+		deal_with_3D $DICOM_zip $BIDS_dir $subject_ID "/T1_MEMPRAGE Iso0.8mm_64ch RMS/"                                                 MEMPRAGE_RMS
+                deal_with_4D $DICOM_zip $BIDS_dir $subject_ID "/T1_MEMPRAGE Iso0.8mm_64ch/"                                                             MEMPRAGE_echoes
+                deal_with_3D $DICOM_zip $BIDS_dir $subject_ID "/ABCD_T2w_SPC_ vNav Iso0.8mm BW650/"                                             T2w
+                ;;
 	*)
 		deal_with_3D $DICOM_zip $BIDS_dir $subject_ID "/T1_MEMPRAGE Iso0.9mm_64ch RMS/"							MEMPRAGE_RMS
 		deal_with_4D $DICOM_zip $BIDS_dir $subject_ID "/T1_MEMPRAGE Iso0.9mm_64ch/"								MEMPRAGE_echoes
