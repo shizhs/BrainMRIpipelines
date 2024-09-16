@@ -1,4 +1,3 @@
-#!/bin/bash
 
 
 # HISTORY
@@ -10,7 +9,7 @@
 DICOM_zip=$1
 BIDS_dir=$2
 subject_ID=$3
-study=$4 # e.g., 'VCI' or 'CADSYD'
+study=$4 # e.g., 'VCI' or 'CADSYD' or 'MAS2'
 
 case "$study" in
 
@@ -27,6 +26,12 @@ case "$study" in
 				echo "[$(date)] : $(basename $0) : Calling bmp_BIDS_CHeBA_reorganiseFlywheelDicomZip_CADSYD.sh to sort out Flywheel zip archive."
 				bmp_BIDS_CHeBA_reorganiseFlywheelDicomZip_CADSYD.sh $DICOM_zip $BIDS_dir $subject_ID
 				;;
+			"MAS2")
+				echo "[$(date)] : $(basename $0) : MAS2 study subject."
+                                echo "[$(date)] : $(basename $0) : Calling bmp_BIDS_CHeBA_reorganiseFlywheelDicomZip_MAS2.sh to sort out Flywheel zip archive."
+                                bmp_BIDS_CHeBA_reorganiseFlywheelDicomZip_MAS2.sh $DICOM_zip $BIDS_dir $subject_ID
+                                ;;
+
 
 			*)
 
@@ -37,7 +42,14 @@ case "$study" in
 
 cd $BIDS_dir
 echo "[$(date)] : $(basename $0) : Calling dcm2bids to convert $subject_ID to BIDS."
-dcm2bids -d sourcedata/$subject_ID -p $subject_ID -c $BMP_PATH/BIDS/config_files/${study}_config.json --clobber --force_dcm2bids
+
+if [ "$subject_ID" == "mas002" ] && [ "$study" == "MAS2" ]; then
+  json="$BMP_PATH/BIDS/config_files/MAS2_special_config.json"
+else
+  json="$BMP_PATH/BIDS/config_files/${study}_config.json"
+fi
+
+dcm2bids -d sourcedata/$subject_ID -p $subject_ID -c $json --clobber --force_dcm2bids
 
 # echo "[$(date)] : $(basename $0) : "
 # echo "[$(date)] : $(basename $0) : [NOTE] If there's any warning message regarding IntendedFor id not found, "

@@ -53,44 +53,20 @@
 #                  Therefore, add --use-syn-sdc and --force-syn
 #                  to enable fieldmap-less distortion correction.
 
-# XPS13 VM lin4neuro
-export DICOM_zip=/home/brain/Desktop/VCI/vci_003/flywheel_20231113_001000.zip
-export BIDS_dir=/home/brain/Desktop/VCI/BIDS
-export subject_ID=vci003
-
-# Macbook pro
-export DICOM_zip=/Users/z3402744/Work/vci/raw/vci_001/flywheel_20230921_005034.zip
-export DICOM_zip=/Users/z3402744/Work/vci/raw/vci_006/flywheel_20231206_110542.zip
-export DICOM_zip=/Users/z3402744/Work/vci/raw/vci_007/flywheel_20240126_020812.zip
-export DICOM_zip=/Users/z3402744/Work/vci/raw/vci_014/flywheel_20240223_031604.zip
-export DICOM_zip=/Users/z3402744/Work/vci/raw/vci_010/flywheel_20240223_235303.zip
-export DICOM_zip=/Users/z3402744/Work/vci/raw/vci_012/flywheel_20240224_001454.zip
-export BIDS_dir=/Users/z3402744/Work/vci/BIDS
-export subject_ID=vci012
-
-# TowerX
-export DICOM_zip=/d/vci/flywheel/vci001/flywheel_20231127_015517.zip
-export DICOM_zip=/d/vci/flywheel/vci006/flywheel_20231206_034538.zip
-export DICOM_zip=/d/vci/vci_014/flywheel_20240325_053620.zip
-export BIDS_dir=/d/vci/BIDS
-export subject_ID=vci014
 
 # Katana
-export DICOM_zip=/srv/scratch/cheba/Imaging/vci/vci_015/flywheel_20240313_002036.zip
-export BIDS_dir=/srv/scratch/cheba/Imaging/vci/BIDS
-export subject_ID=vci015
 module load matlab/R2023b
 
-# DICOM_zip=$1
-# BIDS_dir=$2
-# subject_ID=$3
+export DICOM_zip=$1
+export BIDS_dir=$2
+export subject_ID=$3
 
 omp=16 # max num of threads per process
 
 bids_validator_version=1.13.1
 mriqc_version=23.1.0
 qsiprep_version=0.19.1
-smriprep_version=0.12.2
+smriprep_version=0.16.0
 aslprep_version=0.6.0
 fmriprep_version=23.1.4
 
@@ -98,16 +74,18 @@ fmriprep_version=23.1.4
 # Create dcm2bids configuration file.
 # ++++++++++++++++++++++++++++++++++++++++++++
 # 0.1 - reorganise DICOM folders, and run helper function.
-# bmp_BIDS_CHeBA.sh --study VCI --dicom_zip $DICOM_zip --bids_dir $BIDS_dir --subj_id $subject_ID --is_1st_run
+#bmp_BIDS_CHeBA.sh --study MAS2 --dicom_zip $DICOM_zip --bids_dir $BIDS_dir --subj_id $subject_ID --is_1st_run
 # 0.2 - generate configuration file.
 # MATLAB ==>> vci_config = bmp_BIDS_CHeBA_genVCIconfigFile('rsfMRI'); % edit matchings
 # 0.3 - tidy up.
-# edit BrainMRIPipelines/BIDS/config_files/VCI_config.json to remove [] lines.
+# edit BrainMRIPipelines/BIDS/config_files/MAS2_config.json to remove [] lines.
 
 # dcm2bids for subsequent scans.
 # +++++++++++++++++++++++++++++++++++++++
-conda activate dcm2bids
-bmp_BIDS_CHeBA.sh --study VCI --dicom_zip $DICOM_zip --bids_dir $BIDS_dir --subj_id $subject_ID
+#conda activate dcm2bids
+
+## TODO commenting out just for testing
+bmp_BIDS_CHeBA.sh --study MAS2 --dicom_zip $DICOM_zip --bids_dir $BIDS_dir --subj_id $subject_ID
 
 # validate BIDS
 # +++++++++++++++++++++++++++++++++++++++
@@ -153,91 +131,20 @@ singularity run --cleanenv \
 #
 mkdir -p ${BIDS_dir}/derivatives/smriprep_${smriprep_version}/work
 
+export FS_LICENSE=$FREESURFER_HOME/license.txt
 singularity run --cleanenv \
-				-B $BIDS_dir \
-				-B $FREESURFER_HOME/license.txt:/opt/freesurfer/license.txt \
+		-B $BIDS_dir \
+		-B $FREESURFER_HOME/license.txt:/opt/freesurfer/license.txt \
+		-B ${BIDS_dir}/derivatives/smriprep_${smriprep_version}/work:/work \
                 $BMP_3RD_PATH/smriprep-${smriprep_version}.simg \
                 ${BIDS_dir} ${BIDS_dir}/derivatives/smriprep_${smriprep_version} \
                 participant \
-                --participant_label vci003 \
+                --participant_label ${subject_ID} \
                 --omp-nthreads $omp \
                 --fs-license-file /opt/freesurfer/license.txt \
-                --work-dir ${BIDS_dir}/derivatives/smriprep_${smriprep_version}/work \
+                --work-dir /work \
                 --notrack \
                 -v
-
-# Pre-processing DWI  (qsiprep)
-# +++++++++++++++++++++++++++++++++++++++++++++++++
-#
-# References : https://qsiprep.readthedocs.io/en/latest/preprocessing.html#merge-denoise
-
-work_dir=${BIDS_dir}/derivatives/qsiprep_${qsiprep_version}/work/$subject_ID
-
-mkdir -p $work_dir
-
-singularity run --containall --writable-tmpfs \
-                -B ${BIDS_dir} \
-                -B ${BIDS_dir}/derivatives/qsiprep_${qsiprep_version} \
-                -B ${FREESURFER_HOME}/license.txt:/opt/freesurfer/license.txt \
-                -B $BMP_PATH/VCI_study/bmp_VCI_qsiprep_eddy_param.json:/opt/eddy_param.json \
-                -B $work_dir \
-                $BMP_3RD_PATH/qsiprep-${qsiprep_version}.sif \
-                ${BIDS_dir} \
-                ${BIDS_dir}/derivatives/qsiprep_${qsiprep_version} \
-                participant \
-                --skip_bids_validation \
-                --participant_label ${subject_ID} \
-                --fs-license-file /opt/freesurfer/license.txt \
-                --unringing-method mrdegibbs \
-                --denoise-after-combining \
-                --output-resolution 1.2 \
-                --anat_modality T1w \
-                --hmc_model eddy \
-                --eddy_config /opt/eddy_param.json \
-                --pepolar_method TOPUP \
-                --work_dir $work_dir \
-                --omp_nthreads $omp \
-                -v
-
-
-# Reconstruction DWI measures (qsiprep)
-# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-#
-
-qsiprep_dir=$BIDS_dir/derivatives/qsiprep_${qsiprep_version}/qsiprep
-# output_dir=$BIDS_dir/derivatives/qsiprep_${qsiprep_version}/qsirecon/$spec
-freesurfer_dir=$BIDS_dir/derivatives/smriprep_${smriprep_version}/freesurfer
-
-for spec in mrtrix_multishell_msmt_ACT-hsvs \
-            amico_noddi \
-            dsi_studio_gqi
-
-    output_dir=$BIDS_dir/derivatives/qsiprep_${qsiprep_version}/qsirecon_$spec
-    work_dir=$output_dir/work/$subject_ID
-
-    mkdir -p $work_dir
-
-    singularity run --containall --writable-tmpfs \
-                    -B $BMP_TMP_PATH/templateflow:/home/qsiprep/.cache/templateflow \
-                    -B $qsiprep_dir \
-                    -B $output_dir \
-                    -B $freesurfer_dir \
-                    -B $work_dir \
-                    -B ${FREESURFER_HOME}/license.txt:/opt/freesurfer/license.txt \
-                    $BMP_3RD_PATH/qsiprep-${qsiprep_version}.sif \
-                    $qsiprep_dir $output_dir \
-                    participant \
-                    --skip_bids_validation \
-                    --recon_only \
-                    --participant_label ${subject_ID} \
-                    --recon_input $qsiprep_dir \
-                    --recon_spec $spec \
-                    --freesurfer_input $freesurfer_dir \
-                    --fs-license-file /opt/freesurfer/license.txt \
-                    --work_dir $work_dir \
-                    --omp_nthreads $omp \
-                    -v
-end
 
 
 # Processing ASL (ASLPrep)
@@ -308,6 +215,3 @@ singularity run --cleanenv \
 				-v
 
 
-
-# Postprocessing rsfMRI (XCP-D)
-# ++++++++++++++++++++++++++++++++++++++++++++++++++++++

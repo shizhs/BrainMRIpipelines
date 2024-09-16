@@ -103,7 +103,7 @@ case $is_first_run in
         ;;
     N)
         bmp_BIDS_CHeBA_dcm2bids_followingRuns.sh $DICOM_zip $BIDS_dir $subject_ID $study
-
+        
         echo "Fixing IntendedFor ... "
 
         matlab -nodisplay -nosplash -nodesktop -r \

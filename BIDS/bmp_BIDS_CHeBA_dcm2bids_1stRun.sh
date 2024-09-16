@@ -33,6 +33,10 @@ case "$ans_yn" in
 				bmp_BIDS_CHeBA_reorganiseFlywheelDicomZip_CADSYD.sh $DICOM_zip $BIDS_dir $subject_ID
 				;;
 
+			"MAS2")
+				bmp_BIDS_CHeBA_reorganiseFlywheelDicomZip_MAS2.sh $DICOM_zip $BIDS_dir $subject_ID
+				;;
+
 			*)
 
 				echo "UNKNOWN STUDY : $study"

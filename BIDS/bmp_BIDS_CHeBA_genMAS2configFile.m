@@ -1,4 +1,4 @@
-function vci_dcm2bids_config = bmp_BIDS_CHeBA_genVCIconfigFile (varargin)
+function vci_dcm2bids_config = bmp_BIDS_CHeBA_genMAS2configFile (varargin)
 %
 % DESCRIPTION :
 %
@@ -36,28 +36,17 @@ function vci_dcm2bids_config = bmp_BIDS_CHeBA_genVCIconfigFile (varargin)
 
 	clear vci_dcm2bids_config;
 
+																					% a placeholder, to avoid empty
+																					% []. It does not intend to change
+																					% anything.
 	% MEMPRAGE RMS
 	vci_dcm2bids_config.descriptions(1).id = "id_memprage_rms";
 	vci_dcm2bids_config.descriptions(1).datatype = "anat";
 	vci_dcm2bids_config.descriptions(1).suffix = "T1w";
-	vci_dcm2bids_config.descriptions(1).criteria.SeriesDescription = "ABCD_T1w_MPR_vNav_BW740 RMS";
-	vci_dcm2bids_config.descriptions(1).criteria.ProtocolName = "ABCD_T1w_MPR_vNav_BW740";
+	vci_dcm2bids_config.descriptions(1).criteria.SeriesDescription = "T1_MEMPRAGE Iso0.9mm_64ch RMS";
+	vci_dcm2bids_config.descriptions(1).criteria.ProtocolName = "T1_MEMPRAGE Iso0.9mm_64ch";
 	vci_dcm2bids_config.descriptions(1).custom_entities = "rec-RMS";
-	vci_dcm2bids_config.descriptions(1).sidecar_changes.InstitutionName = "RINSW"; 	% this sidecar change works as
-																					% a placeholder, to avoid empty
-																					% []. It does not intend to change
-																					% anything.
-
-	% MEMPRAGE RMS (vci001 only)
-	curr_length = length(vci_dcm2bids_config.descriptions);
-	curr_idx = curr_length + 1;
-	vci_dcm2bids_config.descriptions(curr_idx).id = "id_memprage_rms_vci001";
-	vci_dcm2bids_config.descriptions(curr_idx).datatype = "anat";
-	vci_dcm2bids_config.descriptions(curr_idx).suffix = "T1w";
-	vci_dcm2bids_config.descriptions(curr_idx).criteria.SeriesDescription = "T1_MEMPRAGE Iso0.9mm_64ch RMS";
-	vci_dcm2bids_config.descriptions(curr_idx).criteria.ProtocolName = "T1_MEMPRAGE Iso0.9mm_64ch";
-	vci_dcm2bids_config.descriptions(curr_idx).custom_entities = "rec-RMS";
-	vci_dcm2bids_config.descriptions(curr_idx).sidecar_changes.InstitutionName = "RINSW";
+	vci_dcm2bids_config.descriptions(1).sidecar_changes.InstitutionName = "RINSW";
 
 	% FLAIR
 	curr_length = length(vci_dcm2bids_config.descriptions);
@@ -65,7 +54,7 @@ function vci_dcm2bids_config = bmp_BIDS_CHeBA_genVCIconfigFile (varargin)
 	vci_dcm2bids_config.descriptions(curr_idx).id = "id_flair";
 	vci_dcm2bids_config.descriptions(curr_idx).datatype = "anat";
 	vci_dcm2bids_config.descriptions(curr_idx).suffix = "FLAIR";
-	vci_dcm2bids_config.descriptions(curr_idx).criteria.SeriesDescription = "t2_space_DF_BW651";
+	vci_dcm2bids_config.descriptions(curr_idx).criteria.SeriesDescription = "t2_space_dark-fluid_sag_p2_ns-t2prep new";
 	vci_dcm2bids_config.descriptions(curr_idx).custom_entities = "acq-spaceDarkFluid";
 	vci_dcm2bids_config.descriptions(curr_idx).sidecar_changes.InstitutionName = "RINSW";
 
@@ -75,21 +64,10 @@ function vci_dcm2bids_config = bmp_BIDS_CHeBA_genVCIconfigFile (varargin)
 	vci_dcm2bids_config.descriptions(curr_idx).id = "id_t2w";
 	vci_dcm2bids_config.descriptions(curr_idx).datatype = "anat";
 	vci_dcm2bids_config.descriptions(curr_idx).suffix = "T2w";
-	vci_dcm2bids_config.descriptions(curr_idx).criteria.SeriesDescription = "ABCD_T2w_SPC_ vNav Iso0.8mm BW744";
-	vci_dcm2bids_config.descriptions(curr_idx).custom_entities = "acq-space";
-	vci_dcm2bids_config.descriptions(curr_idx).sidecar_changes.InstitutionName = "RINSW";
-
-	% T2w (vci001 only)
-	curr_length = length(vci_dcm2bids_config.descriptions);
-	curr_idx = curr_length + 1;
-	vci_dcm2bids_config.descriptions(curr_idx).id = "id_t2w_vci001";
-	vci_dcm2bids_config.descriptions(curr_idx).datatype = "anat";
-	vci_dcm2bids_config.descriptions(curr_idx).suffix = "T2w";
 	vci_dcm2bids_config.descriptions(curr_idx).criteria.SeriesDescription = "ABCD_T2w_SPC_ vNav Iso0.9mm BW650";
 	vci_dcm2bids_config.descriptions(curr_idx).custom_entities = "acq-space";
 	vci_dcm2bids_config.descriptions(curr_idx).sidecar_changes.InstitutionName = "RINSW";
 
-	% Diffusion-weighted imaging
 	% =====================================================
 	% BIDS specification for multi-part DWI scheme:
 	%
@@ -103,7 +81,9 @@ function vci_dcm2bids_config = bmp_BIDS_CHeBA_genVCIconfigFile (varargin)
 	vci_dcm2bids_config.descriptions(curr_idx).datatype = "dwi";
 	vci_dcm2bids_config.descriptions(curr_idx).suffix = "dwi";
 	vci_dcm2bids_config.descriptions(curr_idx).criteria.SeriesDescription = "AP_BLOCK_1_DIFFUSION_30DIR";
+	vci_dcm2bids_config.descriptions(curr_idx).criteria.PhaseEncodingDirection = "j-";
 	vci_dcm2bids_config.descriptions(curr_idx).sidecar_changes.MultipartID = "dwi_1";
+	vci_dcm2bids_config.descriptions(curr_idx).sidecar_changes.PhaseEncodingDirection = "j-";
 	vci_dcm2bids_config.descriptions(curr_idx).custom_entities = "dir-AP_run-1";
 
 	% DWI - AP 2
@@ -113,7 +93,9 @@ function vci_dcm2bids_config = bmp_BIDS_CHeBA_genVCIconfigFile (varargin)
 	vci_dcm2bids_config.descriptions(curr_idx).datatype = "dwi";
 	vci_dcm2bids_config.descriptions(curr_idx).suffix = "dwi";
 	vci_dcm2bids_config.descriptions(curr_idx).criteria.SeriesDescription = "AP_BLOCK_2_DIFFUSION_30DIR";
+	vci_dcm2bids_config.descriptions(curr_idx).criteria.PhaseEncodingDirection = "j-";
 	vci_dcm2bids_config.descriptions(curr_idx).sidecar_changes.MultipartID = "dwi_1";
+	vci_dcm2bids_config.descriptions(curr_idx).sidecar_changes.PhaseEncodingDirection = "j-";
 	vci_dcm2bids_config.descriptions(curr_idx).custom_entities = "dir-AP_run-2";
 
 	% DWI - PA 1
@@ -123,7 +105,9 @@ function vci_dcm2bids_config = bmp_BIDS_CHeBA_genVCIconfigFile (varargin)
 	vci_dcm2bids_config.descriptions(curr_idx).datatype = "dwi";
 	vci_dcm2bids_config.descriptions(curr_idx).suffix = "dwi";
 	vci_dcm2bids_config.descriptions(curr_idx).criteria.SeriesDescription = "PA_BLOCK_1_DIFFUSION_30DIR";
+	vci_dcm2bids_config.descriptions(curr_idx).criteria.PhaseEncodingDirection = "j-";
 	vci_dcm2bids_config.descriptions(curr_idx).sidecar_changes.MultipartID = "dwi_1";
+	vci_dcm2bids_config.descriptions(curr_idx).sidecar_changes.PhaseEncodingDirection = "j-";
 	vci_dcm2bids_config.descriptions(curr_idx).custom_entities = "dir-PA_run-1";
 
 	% DWI - PA 2
@@ -133,7 +117,9 @@ function vci_dcm2bids_config = bmp_BIDS_CHeBA_genVCIconfigFile (varargin)
 	vci_dcm2bids_config.descriptions(curr_idx).datatype = "dwi";
 	vci_dcm2bids_config.descriptions(curr_idx).suffix = "dwi";
 	vci_dcm2bids_config.descriptions(curr_idx).criteria.SeriesDescription = "PA_BLOCK_2_DIFFUSION_30DIR";
+	vci_dcm2bids_config.descriptions(curr_idx).criteria.PhaseEncodingDirection = "j-";
 	vci_dcm2bids_config.descriptions(curr_idx).sidecar_changes.MultipartID = "dwi_1";
+	vci_dcm2bids_config.descriptions(curr_idx).sidecar_changes.PhaseEncodingDirection = "j-";
 	vci_dcm2bids_config.descriptions(curr_idx).custom_entities = "dir-PA_run-2";
 
 	% ASL
@@ -242,63 +228,6 @@ function vci_dcm2bids_config = bmp_BIDS_CHeBA_genVCIconfigFile (varargin)
 	vci_dcm2bids_config.descriptions(curr_idx).sidecar_changes.IntendedFor = "id_asl_asl";
 	vci_dcm2bids_config.descriptions(curr_idx).sidecar_changes.B0FieldIdentifier = "pepolar_asl";
 
-	% CVR resting
-	curr_length = length(vci_dcm2bids_config.descriptions);
-	curr_idx = curr_length + 1;
-
-	vci_dcm2bids_config.descriptions(curr_idx).id = "id_cvr_rest";
-	vci_dcm2bids_config.descriptions(curr_idx).datatype = "func";
-	vci_dcm2bids_config.descriptions(curr_idx).suffix = "bold";
-	vci_dcm2bids_config.descriptions(curr_idx).criteria.SeriesDescription = "Resting state_ep2d_bold 3.8mm TR1500 adaptive";
-	vci_dcm2bids_config.descriptions(curr_idx).custom_entities = "task-rest_dir-PA";
-	vci_dcm2bids_config.descriptions(curr_idx).sidecar_changes.TaskName = "rest";
-	vci_dcm2bids_config.descriptions(curr_idx).sidecar_changes.B0FieldSource = "pepolar_cvr_rest";
-
-	% CVR CO2
-	curr_length = length(vci_dcm2bids_config.descriptions);
-	curr_idx = curr_length + 1;
-
-	vci_dcm2bids_config.descriptions(curr_idx).id = "id_cvr_co2";
-	vci_dcm2bids_config.descriptions(curr_idx).datatype = "func";
-	vci_dcm2bids_config.descriptions(curr_idx).suffix = "bold";
-	vci_dcm2bids_config.descriptions(curr_idx).criteria.SeriesDescription = "CVR_ep2d_bold 3.8mm TR1500 adaptive";
-	vci_dcm2bids_config.descriptions(curr_idx).custom_entities = "task-co2_dir-PA";
-	vci_dcm2bids_config.descriptions(curr_idx).sidecar_changes.TaskName = "co2";
-	vci_dcm2bids_config.descriptions(curr_idx).sidecar_changes.B0FieldSource = "pepolar_cvr_co2";
-
-	% CVR FMAP AP
-	curr_length = length(vci_dcm2bids_config.descriptions);
-	curr_idx = curr_length + 1;
-
-	vci_dcm2bids_config.descriptions(curr_idx).id = "id_cvr_pepolar_fmap_ap";
-	vci_dcm2bids_config.descriptions(curr_idx).datatype = "fmap";
-	vci_dcm2bids_config.descriptions(curr_idx).suffix = "epi";
-	vci_dcm2bids_config.descriptions(curr_idx).criteria.SeriesDescription = "AP_FMAP cvr";
-	vci_dcm2bids_config.descriptions(curr_idx).criteria.PhaseEncodingDirection = "j-";
-	vci_dcm2bids_config.descriptions(curr_idx).custom_entities = "acq-APforCVR_dir-AP";
-	vci_dcm2bids_config.descriptions(curr_idx).sidecar_changes.PhaseEncodingDirection = "j-";
-	% vci_dcm2bids_config.descriptions(curr_idx).sidecar_changes.TotalReadoutTime = 0.051;
-	vci_dcm2bids_config.descriptions(curr_idx).sidecar_changes.IntendedFor(1) = "id_cvr_rest";
-	vci_dcm2bids_config.descriptions(curr_idx).sidecar_changes.IntendedFor(2) = "id_cvr_co2";
-	vci_dcm2bids_config.descriptions(curr_idx).sidecar_changes.B0FieldIdentifier(1) = "pepolar_cvr_rest";
-	vci_dcm2bids_config.descriptions(curr_idx).sidecar_changes.B0FieldIdentifier(2) = "pepolar_cvr_co2";
-
-	% CVR FMAP PA
-	curr_length = length(vci_dcm2bids_config.descriptions);
-	curr_idx = curr_length + 1;
-
-	vci_dcm2bids_config.descriptions(curr_idx).id = "id_cvr_pepolar_fmap_pa";
-	vci_dcm2bids_config.descriptions(curr_idx).datatype = "fmap";
-	vci_dcm2bids_config.descriptions(curr_idx).suffix = "epi";
-	vci_dcm2bids_config.descriptions(curr_idx).criteria.SeriesDescription = "PA_FMAP cvr";
-	vci_dcm2bids_config.descriptions(curr_idx).criteria.PhaseEncodingDirection = "j";
-	vci_dcm2bids_config.descriptions(curr_idx).custom_entities = "acq-PAforCVR_dir-PA";
-	vci_dcm2bids_config.descriptions(curr_idx).sidecar_changes.PhaseEncodingDirection = "j";
-	% vci_dcm2bids_config.descriptions(curr_idx).sidecar_changes.TotalReadoutTime = 0.051;
-	vci_dcm2bids_config.descriptions(curr_idx).sidecar_changes.IntendedFor(1) = "id_cvr_rest";
-	vci_dcm2bids_config.descriptions(curr_idx).sidecar_changes.IntendedFor(2) = "id_cvr_co2";
-	vci_dcm2bids_config.descriptions(curr_idx).sidecar_changes.B0FieldIdentifier(1) = "pepolar_cvr_rest";
-	vci_dcm2bids_config.descriptions(curr_idx).sidecar_changes.B0FieldIdentifier(2) = "pepolar_cvr_co2";
 
 
 	% TO-DO's
@@ -316,9 +245,13 @@ function vci_dcm2bids_config = bmp_BIDS_CHeBA_genVCIconfigFile (varargin)
 	if nargin == 1
 
 		additional_mods = varargin{1};
-
+                        if ischar(additional_mods)
+                            % Assuming the modifications are space-separated
+                            additional_mods = strsplit(additional_mods);
+                        end
 		for i = 1 : length(additional_mods)
-
+                        additional_mods
+			disp(class(additional_mods));
 			switch additional_mods{i}
 
 			case "MEMPRAGE_echoes"
@@ -347,7 +280,7 @@ function vci_dcm2bids_config = bmp_BIDS_CHeBA_genVCIconfigFile (varargin)
 
 	% write to file
 	bmp_path = getenv ('BMP_PATH');
-	fid = fopen(fullfile(bmp_path, 'BIDS', 'config_files', 'VCI_config.json'), 'w');
+	fid = fopen(fullfile(bmp_path, 'BIDS', 'config_files', 'MAS2_config.json'), 'w');
 	fprintf(fid,'%s', jsonencode(vci_dcm2bids_config,PrettyPrint=true));
 	fclose(fid);
 
