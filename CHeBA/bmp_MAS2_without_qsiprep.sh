@@ -66,7 +66,7 @@ omp=16 # max num of threads per process
 bids_validator_version=1.13.1
 mriqc_version=23.1.0
 qsiprep_version=0.19.1
-smriprep_version=0.12.2
+smriprep_version=0.16.0
 aslprep_version=0.6.0
 fmriprep_version=23.1.4
 
